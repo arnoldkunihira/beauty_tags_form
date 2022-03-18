@@ -13,7 +13,7 @@ $ npm install
 
 ```
 
-## Available Scripts
+## Available Script
 
 In the project directory, you can run:
 
