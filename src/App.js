@@ -5,42 +5,68 @@ import axios from "axios";
 
 function App() {
     const [selected, setSelected] = useState("");
-    const [tags, setTags] = useState([]);
-    const [filteredTags, setFilteredTags] = useState(tags);
 
+    const [hairstyle, setHairstyle] = useState([]);
+    const [filteredHairstyle, setFilteredHairstyle] = useState(hairstyle);
+
+    const [makeup, setMakeup] = useState([]);
+    const [filteredMakeup, setFilteredMakeup] = useState(makeup);
+
+    // Hairstyles
     useEffect(() => {
         axios.get("http://localhost:5000/api/hairstyles")
             .then(response => {
-                setTags(response.data);
-                setFilteredTags(response.data);
+                setHairstyle(response.data);
+                setFilteredHairstyle(response.data);
             })
             .catch(error => {
-                console.log(`Error getting data: ${error}`);
+                console.log(`Error getting hairstyles: ${error}`);
+            });
+    }, []);
+
+    // Makeup
+    useEffect(() => {
+        axios.get("http://localhost:5000/api/makeup")
+            .then(response => {
+                setMakeup(response.data);
+                setFilteredMakeup(response.data);
+            })
+            .catch(error => {
+                console.log(`Error getting makeup: ${error}`);
             });
     }, []);
 
     const handleSearch = (event) => {
         let value = event.target.value.toLowerCase();
-        let result;
-        result = tags.filter((data) => {
+        let result = hairstyle.filter((data) => {
             return data.name.search(value) !== -1;
         });
 
-        setFilteredTags(result)
+        return result ? setFilteredHairstyle(result): setFilteredMakeup(result);
     }
 
     return (
         <div className="container">
-            <Header />
-            <Dropdown selected={selected} setSelected={setSelected} />
+            <Header/>
+            <Dropdown selected={selected} setSelected={setSelected}/>
             <form className="fields-form">
                 <div className="form-control">
-                    <label>Search for Tags</label>
+                    <label>Search for Beauty Tags</label>
                     <input type="text" placeholder="Search..."
                            onChange={(event) => handleSearch(event)}/>
                 </div>
                 <div className="list">
-                    {filteredTags.map((value) => {
+                    {filteredHairstyle.map((value) => {
+                        return (
+                            <div key={value.id}>
+                                <div className="listFiltered" key={value.id}>
+                                    {value.name}
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    {filteredMakeup.map((value) => {
                         return (
                             <div key={value.id}>
                                 <div className="listFiltered" key={value.id}>
